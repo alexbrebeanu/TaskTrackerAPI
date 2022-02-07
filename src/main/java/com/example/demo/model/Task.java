@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private double id;
+    private long id;
 
     @Column(name = "text")
     private String text;
@@ -21,14 +21,13 @@ public class Task {
     public Task() {
     }
 
-    public Task(double id, String text, String day, boolean reminder) {
-        this.id = id;
+    public Task(String text, String day, boolean reminder) {
         this.text = text;
         this.day = day;
         this.reminder = reminder;
     }
 
-    public double getId() {
+    public long getId() {
         return id;
     }
 
@@ -44,7 +43,7 @@ public class Task {
         return reminder;
     }
 
-    public void setId(double id) {
+    public void setId(long id) {
         this.id = id;
     }
 
