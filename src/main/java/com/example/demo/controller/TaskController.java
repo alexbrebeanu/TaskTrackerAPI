@@ -17,6 +17,7 @@ public class TaskController {
     @Autowired
     TaskRepository taskRepository;
 
+    @CrossOrigin
     @GetMapping("/tasks")
     public ResponseEntity<List<Task>> getAllTasks(){
         try{
@@ -31,9 +32,10 @@ public class TaskController {
         }
     }
 
+    @CrossOrigin
     @GetMapping("/tasks/{id}")
     public ResponseEntity<Task> getTaskById(@PathVariable("id") long id){
-        Optional<Task> task =  taskRepository.findById(id);
+        Optional<Task> task =  taskRepository.findById(id);System.out.println(task.get());
         if (task.isPresent()){
             return new ResponseEntity<>(task.get(), HttpStatus.OK);
         }
@@ -42,14 +44,14 @@ public class TaskController {
         }
     }
 
+    @CrossOrigin
     @PostMapping("/tasks")
     public ResponseEntity<Task>createTask(@RequestBody Task task){
         try{
             System.out.println(task);
             Task _task = new Task(task.getText(), task.getDay(), task.isReminder());
             System.out.println(_task);
-            System.out.println(taskRepository.save(_task));
-            //taskRepository.save(_task);
+            taskRepository.save(_task);
             return new ResponseEntity<>(_task, HttpStatus.OK);
         }catch (Exception e){
             System.out.println(e);
@@ -57,6 +59,7 @@ public class TaskController {
         }
     }
 
+    @CrossOrigin
     @DeleteMapping("/tasks/{id}")
     public ResponseEntity<HttpStatus> deleteTask(@PathVariable("id") long id){
         try{
@@ -64,6 +67,19 @@ public class TaskController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }catch(Exception e){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @CrossOrigin
+    @PutMapping("/tasks/{id}")
+    public ResponseEntity<Task> toggleReminder(@PathVariable("id") long id){
+        Optional<Task> taskData = taskRepository.findById(id);
+        if(taskData.isPresent()){
+            Task _task = taskData.get();
+            _task.setReminder(!(_task.isReminder()));
+            return new ResponseEntity<>(taskRepository.save(_task), HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }
